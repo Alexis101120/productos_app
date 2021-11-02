@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 
 class InputDecorations {
-  static InputDecoration authInputDecoration(){
+  static InputDecoration authInputDecoration({
+    required String hintText,
+    required String labelText,
+    IconData? prefixIcon
+  }){
     return InputDecoration(
                 enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.deepPurple),
@@ -11,10 +15,10 @@ class InputDecorations {
                   borderSide: BorderSide(color: Colors.deepPurple, width: 2),
                   
                 ),
-                hintText: 'Correo electrónico',
-                labelText: 'Correo',
+                hintText: hintText,
+                labelText: labelText,
                 labelStyle: const TextStyle(color: Colors.grey),
-                prefixIcon: const Icon(Icons.alternate_email_sharp, color: Colors.deepPurple),
+                prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10)
                 )
