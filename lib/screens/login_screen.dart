@@ -12,7 +12,7 @@ class LoginScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 250),
+              const SizedBox(height: 200),
               CardContainer(
                 child: Column(
                   children: [
@@ -38,19 +38,49 @@ class _LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Form(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           children: <Widget>[
             TextFormField(
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecorations.authInputDecoration(),
+              decoration: InputDecorations.authInputDecoration(hintText: 'ejemplo@correo.com', labelText: 'Correo electronico', prefixIcon: Icons.alternate_email_rounded),
+              validator: ( value ){
+               String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+              RegExp regExp  = new RegExp(pattern);
+              return regExp.hasMatch(value ?? '') ? null : 'El valor ingresado no es un correo';
+              }
             ),
             const SizedBox(height: 30),
             TextFormField(
               autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecorations.authInputDecoration(),
-            )
+              obscureText: true,
+              keyboardType: TextInputType.text,
+              decoration: InputDecorations.authInputDecoration(hintText: '********', labelText: 'Contraseña', prefixIcon: Icons.lock_rounded),
+              validator: ( value ){
+              if(value != null && value.length > 6){
+                return null;
+              }else{
+                return 'La contraseña debe tener minimo 6 caracteres';
+              }
+              }
+            ),
+            const SizedBox(height: 30),
+            MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              disabledColor: Colors.grey,
+              elevation: 0,
+              color: Colors.deepPurple,
+              child : Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                width: double.infinity,
+                height: 50,
+                child: Center(
+                  child: Text('Ingresar', style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+              ),
+              onPressed: (){},
+              )
           ],
         ),
       )
