@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text('Crear una cuenta nueva', style: TextStyle(fontSize: 15, color: Colors.grey)),
+              const Text('Crear una cuenta nueva', style: TextStyle(fontSize: 15, color: Colors.grey)),
             ]
          )
        )
@@ -75,7 +75,7 @@ class _LoginForm extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 width: double.infinity,
                 height: 50,
-                child: Center(
+                child: const Center(
                   child: Text('Ingresar', style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
               ),
