@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-class nameScreen extends StatelessWidget {
+class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Productos'),
+      ),
       body: Center(
-        child: Text('Hola Mundo'),
+        child: CircularProgressIndicator(
+          color: Colors.indigo,
+        ),
       ),
     );
   }
