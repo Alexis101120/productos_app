@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:productos_app/screens/screens.dart';
 import 'package:productos_app/services/services.dart';
 
+
 void main() => runApp(AppState());
 
 class AppState extends StatelessWidget {
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       initialRoute: 'login',
       routes: {
         'login': (_) => LoginScreen(),
+        'register' : (_) => RegisterScreen(),
         'home': (_) => HomeScreen(),
         'product': (_) => ProductScreen(),
       },
