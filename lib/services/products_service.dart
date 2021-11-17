@@ -5,23 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
 import 'package:http/http.dart' as http;
 
-class ProductService extends ChangeNotifier {
+class ProductsService extends ChangeNotifier {
   final String _baseUrl = 'flutter-varios-7b73d-default-rtdb.firebaseio.com';
-  final List<Product> productos = [];
-  late Product productoSeleccionado;
+  final List<Product> products = [];
+  late Product selectedProduct;
 
   File? newPictureFile;
 
   bool isLoading = true;
   bool isSaving = false;
 
-  ProductService() {
+  ProductsService() {
     this.loadProducts();
   }
 
   Future<List<Product>> loadProducts() async {
     this.isLoading = true;
     notifyListeners();
+
     final url = Uri.https(_baseUrl, 'products.json');
     final resp = await http.get(url);
 
@@ -30,77 +31,90 @@ class ProductService extends ChangeNotifier {
     productsMap.forEach((key, value) {
       final tempProduct = Product.fromMap(value);
       tempProduct.id = key;
-      this.productos.add(tempProduct);
+      this.products.add(tempProduct);
     });
+
     this.isLoading = false;
     notifyListeners();
-    return this.productos;
+
+    return this.products;
   }
 
-  Future saveOrCreateProduct(Product producto) async {
+  Future saveOrCreateProduct(Product product) async {
     isSaving = true;
     notifyListeners();
 
-    if (producto.id == null) {
-      createProducto(producto);
+    if (product.id == null) {
+      // Es necesario crear
+      await this.createProduct(product);
     } else {
-      await updateProduct(producto);
+      // Actualizar
+      await this.updateProduct(product);
     }
 
     isSaving = false;
     notifyListeners();
   }
 
-  Future<String> updateProduct(Product producto) async {
-    final url = Uri.https(_baseUrl, 'products/${producto.id}.json');
-    final resp = await http.put(url, body: producto.toJson());
-    final decodeData = resp.body;
+  Future<String> updateProduct(Product product) async {
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    final resp = await http.put(url, body: product.toJson());
+    final decodedData = resp.body;
 
+    //TODO: Actualizar el listado de productos
     final index =
-        this.productos.indexWhere((element) => element.id == producto.id);
-    productos[index] = producto;
+        this.products.indexWhere((element) => element.id == product.id);
+    this.products[index] = product;
 
-    return producto.id!;
+    return product.id!;
   }
 
-  Future<String> createProducto(Product producto) async {
+  Future<String> createProduct(Product product) async {
     final url = Uri.https(_baseUrl, 'products.json');
-    final resp = await http.post(url, body: producto.toJson());
+    final resp = await http.post(url, body: product.toJson());
     final decodedData = json.decode(resp.body);
-    producto.id = decodedData['name'];
-    productos.add(producto);
-    return producto.id!;
+
+    product.id = decodedData['name'];
+
+    this.products.add(product);
+
+    return product.id!;
   }
 
   void updateSelectedProductImage(String path) {
-    this.productoSeleccionado.picture = path;
-    newPictureFile = File.fromUri(Uri(path: path));
+    this.selectedProduct.picture = path;
+    this.newPictureFile = File.fromUri(Uri(path: path));
+
     notifyListeners();
   }
 
   Future<String?> uploadImage() async {
-    if (newPictureFile == null) return null;
+    if (this.newPictureFile == null) return null;
 
-    isSaving = true;
+    this.isSaving = true;
     notifyListeners();
 
     final url = Uri.parse(
         'https://api.cloudinary.com/v1_1/dg1wi21hj/image/upload?upload_preset=ppk9fgbd');
 
     final imageUploadRequest = http.MultipartRequest('POST', url);
+
     final file =
         await http.MultipartFile.fromPath('file', newPictureFile!.path);
+
     imageUploadRequest.files.add(file);
 
     final streamResponse = await imageUploadRequest.send();
     final resp = await http.Response.fromStream(streamResponse);
+
     if (resp.statusCode != 200 && resp.statusCode != 201) {
-      print('algo salio mal!');
+      print('algo salio mal');
       print(resp.body);
       return null;
     }
 
-    newPictureFile = null;
+    this.newPictureFile = null;
+
     final decodedData = json.decode(resp.body);
     return decodedData['secure_url'];
   }
