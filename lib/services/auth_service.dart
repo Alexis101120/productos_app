@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 
-class AtuhService extends ChangeNotifier{
+class AuthService extends ChangeNotifier{
 
   final String _baseUrl = 'identitytoolkit.googleapis.com';
   final String _firebaseToken = 'AIzaSyC1620TVlYrgq_Ho-2A3FWT6j_rC9fytNw';
