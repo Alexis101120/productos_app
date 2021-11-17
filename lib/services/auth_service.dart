@@ -22,7 +22,6 @@ class AtuhService extends ChangeNotifier{
     final resp = await http.post(url, body: json.encode(authData));
     final Map<String,dynamic> decodeResp = json.decode(resp.body);
     print(decodeResp);
-
   }
 
 }
